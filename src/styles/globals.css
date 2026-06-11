@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono&display=swap');
+
+:root {
+  /* Base surfaces — warm dark earth, not cold black */
+  --earth-void:        #060A06;   /* near-black with green tint */
+  --earth-deep:        #0C1A0E;   /* deep forest night */
+  --earth-soil:        #1A120B;   /* dark soil brown */
+  --earth-bark:        #2C1A0F;   /* tree bark */
+  --earth-moss:        #1C2B1A;   /* dark moss */
+
+  /* Primary environment colors */
+  --forest-deep:       #1B4332;   /* deep forest green */
+  --forest-mid:        #2D6A4F;   /* forest green */
+  --forest-canopy:     #40916C;   /* canopy green */
+  --forest-light:      #52B788;   /* fresh leaf */
+  --forest-glow:       #74C69D;   /* bioluminescent leaf */
+
+  /* Ocean/water */
+  --ocean-abyss:       #03045E;   /* ocean trench */
+  --ocean-deep:        #0077B6;   /* deep water */
+  --ocean-mid:         #0096C7;   /* open water */
+  --ocean-surface:     #48CAE4;   /* surface shimmer */
+  --ocean-foam:        #ADE8F4;   /* sea foam */
+
+  /* Earth tones */
+  --soil-rich:         #6B4226;   /* rich soil */
+  --stone-warm:        #8B7355;   /* warm stone */
+  --sand-dry:          #C9A96E;   /* dry sand */
+
+  /* Alert/stress colors — natural not neon */
+  --heat-amber:        #E76F00;   /* wildfire amber */
+  --heat-red:          #C1440E;   /* drought red */
+  --heat-crisis:       #8B1A00;   /* crisis dark red */
+
+  /* Bioluminescent accents — the only "glow" allowed */
+  --bio-green:         #52B788;   /* healthy earth glow */
+  --bio-teal:          #2DC2BD;   /* water bioluminescence */
+  --bio-amber:         #F4A261;   /* warning glow */
+
+  /* Text */
+  --text-primary:      #E8F4EA;   /* warm off-white, not pure #FFF */
+  --text-secondary:    rgba(232,244,234,0.65);
+  --text-muted:        rgba(232,244,234,0.35);
+  --text-data:         #ADE8F4;   /* ocean tint for numbers/mono */
+
+  /* Glass surfaces — warm-tinted, not cold blue */
+  --glass-bg:          rgba(28, 43, 26, 0.45);  /* mossy glass */
+  --glass-border:      rgba(82, 183, 136, 0.15); /* forest border */
+  --glass-hover:       rgba(82, 183, 136, 0.08);
+
+  /* Tier colors — natural material palette */
+  --tier-guardian:     #52B788;   /* healthy forest */
+  --tier-aware:        #48CAE4;   /* clear water */
+  --tier-average:      #E76F00;   /* wildfire amber */
+  --tier-heavy:        #C1440E;   /* drought red */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--earth-void);
+  color: var(--text-primary);
+  font-family: 'Space Grotesk', sans-serif;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+}
+
+.scroll-container {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.act {
+  height: 100vh;
+  scroll-snap-align: start;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Progress dots - left edge */
+.progress-dots {
+  position: fixed;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 100;
+}
+
+.progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(232, 244, 234, 0.2);
+  border: 1px solid rgba(232, 244, 234, 0.3);
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+
+.progress-dot.active {
+  background: var(--bio-green);
+  border-color: var(--bio-green);
+  box-shadow: 0 0 8px var(--bio-green);
+  transform: scale(1.3);
+}
+
+/* Utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

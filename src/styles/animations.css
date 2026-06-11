@@ -1,0 +1,147 @@
+/* ═══════════════════════════════════
+   EARTHPULSE Animation Library
+   ═══════════════════════════════════ */
+
+/* Star twinkling */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+/* Earth rotation hue shift */
+@keyframes earthRotate {
+  to { filter: hue-rotate(5deg); }
+}
+
+@keyframes earthSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Cloud drift */
+@keyframes cloudDrift {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Earth breathing - default 4s */
+@keyframes earthBreathe {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 60px #1565C0, 0 0 120px rgba(21, 101, 192, 0.3);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 80px #0D47A1, 0 0 160px rgba(13, 71, 161, 0.5);
+  }
+}
+
+/* Flash effects for quiz feedback */
+@keyframes flashRed {
+  0%, 100% { box-shadow: 0 0 20px #1565C0; }
+  50% { box-shadow: 0 0 40px #FF5252, 0 0 60px rgba(255, 82, 82, 0.5); }
+}
+
+@keyframes flashGreen {
+  0%, 100% { box-shadow: 0 0 20px #1565C0; }
+  50% { box-shadow: 0 0 40px #52C41A, 0 0 60px rgba(82, 196, 26, 0.5); }
+}
+
+/* Quiz card slide in */
+@keyframes slideInRight {
+  from {
+    transform: translateX(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Fade in up - for hero text */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Bounce for scroll indicator */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+/* Light ray drift - Act 4 */
+@keyframes rayDrift {
+  from { transform: rotate(15deg) translateX(-60px); }
+  to { transform: rotate(15deg) translateX(60px); }
+}
+
+/* Wave animations - Act 5 */
+@keyframes wave1 {
+  0%, 100% { transform: translateY(0) scaleX(1); }
+  50% { transform: translateY(-20px) scaleX(1.02); }
+}
+
+@keyframes wave2 {
+  0%, 100% { transform: translateY(0) scaleX(1); }
+  50% { transform: translateY(-15px) scaleX(1.01); }
+}
+
+@keyframes wave3 {
+  0%, 100% { transform: translateY(0) scaleX(1); }
+  50% { transform: translateY(-10px) scaleX(1.015); }
+}
+
+/* Result card entrance */
+@keyframes elasticIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Particle burst for pledge */
+@keyframes particleBurst {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+/* Fade in generic */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Count up pulse */
+@keyframes countPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+/* Radial progress stroke */
+@keyframes strokeDraw {
+  from { stroke-dashoffset: 339.29; }
+}

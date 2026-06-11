@@ -1,0 +1,46 @@
+.earth-orb {
+  position: relative;
+  z-index: 5;
+}
+
+.earth-atmosphere {
+  position: absolute;
+  inset: -12px;
+  background: transparent;
+  border-radius: 50%;
+  box-shadow: 
+    0 0 20px 8px rgba(64,145,108,0.15),
+    0 0 60px 20px rgba(0,119,182,0.12),
+    0 0 100px 40px rgba(6,10,6,0.8);
+  pointer-events: none;
+  transition: all 2s ease;
+}
+
+.earth-orb.tier-guardian .earth-atmosphere { box-shadow: 0 0 20px 8px rgba(64,145,108,0.25), 0 0 60px 20px rgba(0,119,182,0.12), 0 0 100px 40px rgba(6,10,6,0.8); }
+.earth-orb.tier-aware .earth-atmosphere { box-shadow: 0 0 20px 8px rgba(0,150,199,0.20), 0 0 60px 20px rgba(0,119,182,0.12), 0 0 100px 40px rgba(6,10,6,0.8); }
+.earth-orb.tier-average .earth-atmosphere { box-shadow: 0 0 20px 8px rgba(231,111,0,0.18), 0 0 60px 20px rgba(0,119,182,0.12), 0 0 100px 40px rgba(6,10,6,0.8); }
+.earth-orb.tier-heavy .earth-atmosphere { box-shadow: 0 0 20px 8px rgba(139,26,0,0.22), 0 0 60px 20px rgba(0,119,182,0.12), 0 0 100px 40px rgba(6,10,6,0.8); }
+
+.earth-surface {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse 60% 20% at 50% 5%, rgba(255,255,255,0.15) 0%, transparent 100%),
+    radial-gradient(ellipse 55% 65% at 35% 45%, #2D6A4F 0%, #1B4332 40%, transparent 70%),
+    radial-gradient(ellipse 40% 50% at 72% 60%, #40916C 0%, #2D6A4F 50%, transparent 80%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, #0077B6 0%, #03045E 70%, #020308 100%);
+  border-radius: 50%;
+  animation: earthSpin 25s linear infinite;
+}
+
+.earth-clouds {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 30% at 30% 35%, rgba(255,255,255,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 20% at 70% 55%, rgba(255,255,255,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 15% at 55% 75%, rgba(255,255,255,0.09) 0%, transparent 50%);
+  border-radius: 50%;
+  animation: cloudDrift 45s linear infinite;
+  pointer-events: none;
+}
