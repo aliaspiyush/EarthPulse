@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 interface Star {
   id: number;
@@ -9,26 +9,23 @@ interface Star {
   duration: string;
 }
 
+const STAR_POSITIONS: Star[] = Array.from({ length: 200 }, (_, i) => ({
+  id: i,
+  top: `${Math.random() * 100}%`,
+  left: `${Math.random() * 100}%`,
+  size: Math.random() > 0.8 ? 2 : 1, // 1px or 2px
+  delay: `${Math.random() * 4}s`,
+  duration: `${Math.random() * 3 + 2}s`, // 2-5s twinkling
+}));
+
 /**
  * StarField — 200 twinkling star dots for the Act 1 deep-space background.
- * Uses useEffect to generate random positions once on mount,
- * preventing re-randomization and keeping render pure.
+ * Uses a module-level constant to compute positions exactly once.
  */
 const StarField: React.FC = () => {
-  const [stars] = useState<Star[]>(() =>
-    Array.from({ length: 200 }, (_, i) => ({
-      id: i,
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      size: Math.random() * 1.5 + 0.5, // 0.5px to 2px
-      delay: `${Math.random() * 5}s`,
-      duration: `${Math.random() * 3 + 2}s`, // 2-5s twinkling
-    }))
-  );
-
   return (
     <div className="star-field" aria-hidden="true">
-      {stars.map((star) => (
+      {STAR_POSITIONS.map((star) => (
         <div
           key={star.id}
           className="star"

@@ -1,8 +1,9 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import type { QuizAnswer, UserFootprint } from '../types';
+import React, { useMemo } from 'react';
+import type { UserFootprint } from '../types';
 import { questions } from '../data/questions';
-import { calculateFootprint } from '../utils/emissions';
 import QuizCard from '../components/QuizCard';
+import { useQuiz } from '../hooks/useQuiz';
+import { CO2_BASELINES } from '../utils/emissions';
 
 interface Act2Props {
   onComplete: (footprint: UserFootprint) => void;
@@ -13,12 +14,14 @@ interface Act2Props {
  * 7 questions, one at a time, with reactive background gradient.
  */
 const Act2Mirror: React.FC<Act2Props> = ({ onComplete }) => {
-  const [answers, setAnswers] = useState<QuizAnswer[]>([]);
-  const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
-
-  const runningScore = useMemo(() => {
-    return answers.reduce((acc, a) => acc + a.kgValue, 0);
-  }, [answers]);
+  const {
+    answers,
+    currentQuestionIdx,
+    runningScore,
+    handleAnswer,
+    isComplete,
+    microResponse,
+  } = useQuiz(onComplete);
 
   // Background interpolates: good → forest green, bad → smog purple
   const backgroundStyle = useMemo((): React.CSSProperties => {
@@ -26,7 +29,7 @@ const Act2Mirror: React.FC<Act2Props> = ({ onComplete }) => {
       return { background: 'linear-gradient(180deg, #060A06 0%, #0C1A0E 30%, #1B4332 70%, #2D6A4F 100%)' };
     }
     const avgPerQuestion = runningScore / answers.length;
-    const badness = Math.min(avgPerQuestion / 4000, 1);
+    const badness = Math.min(avgPerQuestion / CO2_BASELINES.QUESTION_MAX, 1);
     
     // Good: #060A06 -> #0C1A0E -> #1B4332 -> #2D6A4F
     // Bad:  #0A0806 -> #1A0E08 -> #2C1A0F -> #2C1A0F
@@ -46,29 +49,14 @@ const Act2Mirror: React.FC<Act2Props> = ({ onComplete }) => {
     if (answers.length === 0) return { width: '0%' };
     const width = `${(answers.length / questions.length) * 100}%`;
     const avgPerQ = runningScore / answers.length;
-    const goodness = 1 - Math.min(avgPerQ / 4000, 1);
+    const goodness = 1 - Math.min(avgPerQ / CO2_BASELINES.QUESTION_MAX, 1);
     const r = Math.round(255 + (82 - 255) * goodness);
     const g = Math.round(82 + (196 - 82) * goodness);
     const b = Math.round(82 + (26 - 82) * goodness);
     return { width, backgroundColor: `rgb(${r}, ${g}, ${b})` };
   }, [answers.length, runningScore]);
 
-  const handleAnswer = useCallback(
-    (answer: QuizAnswer) => {
-      const newAnswers = [...answers, answer];
-      setAnswers(newAnswers);
 
-      if (newAnswers.length >= questions.length) {
-        const footprint = calculateFootprint(newAnswers);
-        setTimeout(() => onComplete(footprint), 400);
-      } else {
-        setTimeout(() => setCurrentQuestionIdx((prev) => prev + 1), 300);
-      }
-    },
-    [answers, onComplete]
-  );
-
-  const isComplete = answers.length >= questions.length;
 
   return (
     <section
@@ -94,6 +82,7 @@ const Act2Mirror: React.FC<Act2Props> = ({ onComplete }) => {
             questionIndex={currentQuestionIdx}
             totalQuestions={questions.length}
             onAnswer={handleAnswer}
+            microResponse={microResponse}
           />
         )}
 

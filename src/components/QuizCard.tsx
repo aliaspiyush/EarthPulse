@@ -1,12 +1,14 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import type { QuizQuestion, QuizAnswer } from '../types';
+import { ANIMATION_DURATIONS } from '../utils/constants';
 import EarthOrb from './EarthOrb';
 
 interface QuizCardProps {
   question: QuizQuestion;
   questionIndex: number;
   totalQuestions: number;
-  onAnswer: (answer: QuizAnswer) => void;
+  onAnswer: (answer: QuizAnswer, questionText: string, answerText: string) => void;
+  microResponse?: string | null;
 }
 
 /**
@@ -18,9 +20,16 @@ const QuizCard: React.FC<QuizCardProps> = ({
   questionIndex,
   totalQuestions,
   onAnswer,
+  microResponse,
 }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [flashClass, setFlashClass] = useState<string>('');
+  const firstOptionRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    // Focus the first option when the question changes (mounts)
+    firstOptionRef.current?.focus();
+  }, [question.id]);
 
   // Determine if an answer is "good" (low carbon) or "bad" (high carbon)
   // Using median of all answer values as threshold
@@ -47,16 +56,18 @@ const QuizCard: React.FC<QuizCardProps> = ({
 
     // Flash the mini earth
     setFlashClass(quality === 'good' ? 'flash-green-anim' : 'flash-red-anim');
-    setTimeout(() => setFlashClass(''), 500);
+    setTimeout(() => setFlashClass(''), ANIMATION_DURATIONS.CARD_FLASH);
 
-    // Delay to show selection feedback before advancing
-    setTimeout(() => {
-      onAnswer({
+    // No setTimeout here anymore, useQuiz handles the delay and async fetch
+    onAnswer(
+      {
         questionId: question.id,
         selectedIndex: index,
         kgValue: answer.kgPerYear,
-      });
-    }, 600);
+      },
+      question.question,
+      answer.text
+    );
   };
 
   return (
@@ -74,29 +85,55 @@ const QuizCard: React.FC<QuizCardProps> = ({
       </div>
 
       <div className="quiz-answers">
-        {question.answers.map((answer, idx) => {
+        {question.answers.map((answer, index) => {
           let className = 'quiz-answer';
-          if (selectedIndex === idx) {
+          if (selectedIndex === index) {
             const quality = getAnswerQuality(answer.kgPerYear);
             className += quality === 'good' ? ' selected-good' : ' selected-bad';
           }
+          const isSelected = selectedIndex === index;
 
           return (
             <button
-              key={idx}
+              key={index}
+              ref={index === 0 ? firstOptionRef : null}
               className={className}
-              onClick={() => handleSelect(idx)}
+              onClick={() => handleSelect(index)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleSelect(index);
+                }
+              }}
               disabled={selectedIndex !== null}
               type="button"
-              id={`quiz-q${question.id}-a${idx}`}
+              id={`quiz-q${question.id}-a${index}`}
+              aria-pressed={isSelected}
+              style={{
+                animationDelay: `${0.1 + index * 0.1}s`,
+                pointerEvents: selectedIndex !== null ? 'none' : 'auto'
+              }}
             >
               {answer.text}
             </button>
           );
         })}
       </div>
+
+      {microResponse && (
+        <p className="micro-response" style={{
+          animation: 'fadeInUp 0.3s ease-out',
+          fontStyle: 'italic',
+          color: 'var(--text-data)',
+          marginTop: '1rem',
+          textAlign: 'center',
+          fontSize: '0.9rem',
+        }}>
+          {microResponse}
+        </p>
+      )}
     </div>
   );
 };
 
-export default QuizCard;
+export default React.memo(QuizCard);

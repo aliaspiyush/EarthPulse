@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import type { GeminiResponse, UserFootprint } from '../types';
-import { callGemini } from '../utils/gemini';
+import React, { useState, useEffect, useRef } from 'react';
+import type { GeminiResponse, UserFootprint, Tier } from '../types';
+import { CO2_BASELINES } from '../utils/emissions';
+import { ANIMATION_DURATIONS } from '../utils/constants';
 import { animateCountUp } from '../utils/countUp';
 import SkeletonLoader from '../components/SkeletonLoader';
 
@@ -9,9 +10,7 @@ interface Act3Props {
   geminiResponse: GeminiResponse | null;
   geminiLoading: boolean;
   geminiError: boolean;
-  onGeminiResult: (response: GeminiResponse) => void;
-  onGeminiLoadingChange: (loading: boolean) => void;
-  onGeminiErrorChange: (error: boolean) => void;
+  fetchGeminiResponse: (totalKg: number, tier: NonNullable<Tier>) => Promise<void>;
 }
 
 const CIRCUMFERENCE = 2 * Math.PI * 54; // ≈ 339.29
@@ -27,9 +26,7 @@ const Act3Weight: React.FC<Act3Props> = ({
   footprint,
   geminiResponse,
   geminiLoading,
-  onGeminiResult,
-  onGeminiLoadingChange,
-  onGeminiErrorChange,
+  fetchGeminiResponse,
 }) => {
   const [displayNumber, setDisplayNumber] = useState(0);
   const [strokeOffset, setStrokeOffset] = useState(CIRCUMFERENCE);
@@ -44,46 +41,29 @@ const Act3Weight: React.FC<Act3Props> = ({
   useEffect(() => {
     if (!footprint) return;
     cancelCountRef.current?.();
-    const cancel = animateCountUp(0, totalKg, 1500, (value) => {
+    const cancel = animateCountUp(0, totalKg, ANIMATION_DURATIONS.COUNT_UP, (value) => {
       setDisplayNumber(value);
     });
     cancelCountRef.current = cancel;
 
     requestAnimationFrame(() => {
-      const targetOffset = CIRCUMFERENCE - Math.min(totalKg / 20000, 1) * CIRCUMFERENCE;
+      const targetOffset = CIRCUMFERENCE - Math.min(totalKg / CO2_BASELINES.MAX_SCALE, 1) * CIRCUMFERENCE;
       setStrokeOffset(targetOffset);
     });
 
     return () => cancel();
   }, [footprint, totalKg]);
 
-  const triggerGemini = useCallback(
-    async () => {
-      if (!footprint || !footprint.tier || hasCalledRef.current) return;
-      hasCalledRef.current = true;
-      onGeminiLoadingChange(true);
-      onGeminiErrorChange(false);
-      try {
-        const response = await callGemini(footprint.totalKg, footprint.tier);
-        onGeminiResult(response);
-      } catch {
-        onGeminiErrorChange(true);
-      } finally {
-        onGeminiLoadingChange(false);
-      }
-    },
-    [footprint, onGeminiResult, onGeminiLoadingChange, onGeminiErrorChange]
-  );
-
   useEffect(() => {
-    if (footprint && !hasCalledRef.current) {
-      triggerGemini();
+    if (footprint && footprint.tier && !hasCalledRef.current) {
+      hasCalledRef.current = true;
+      fetchGeminiResponse(footprint.totalKg, footprint.tier);
     }
-  }, [footprint, triggerGemini]);
+  }, [footprint, fetchGeminiResponse]);
 
   // Source: Our World in Data, 2022 global average per capita ~4700 kg
-  const globalAvgPercent = Math.min((4700 / 20000) * 100, 100);
-  const userPercent = Math.min((totalKg / 20000) * 100, 100);
+  const globalAvgPercent = Math.min((CO2_BASELINES.GLOBAL_AVERAGE / CO2_BASELINES.MAX_SCALE) * 100, 100);
+  const userPercent = Math.min((totalKg / CO2_BASELINES.MAX_SCALE) * 100, 100);
 
   if (!footprint) {
     return (

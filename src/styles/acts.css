@@ -26,6 +26,7 @@
   border-radius: 50%;
   background: #D4E8D4; /* warm-tinted stars */
   animation: twinkle linear infinite;
+  will-change: transform;
 }
 
 .hero-content {
@@ -433,6 +434,7 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
   overflow: hidden;
+  will-change: transform;
 }
 
 .action-card:hover {
@@ -550,6 +552,7 @@
   width: 110%;
   height: 35%;
   border-radius: 50% 50% 0 0 / 20% 20% 0 0;
+  will-change: transform;
 }
 
 .wave-1 {

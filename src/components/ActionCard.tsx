@@ -76,6 +76,7 @@ const ActionCard: React.FC<ActionCardProps> = ({
           onClick={handlePledge}
           type="button"
           id={`pledge-action-${action.id}`}
+          aria-pressed={isPledged}
         >
           {isPledged ? '✓ Pledged' : 'Pledge'}
         </button>
@@ -107,4 +108,4 @@ const ActionCard: React.FC<ActionCardProps> = ({
   );
 };
 
-export default ActionCard;
+export default React.memo(ActionCard);

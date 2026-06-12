@@ -46,4 +46,4 @@ const SDGBadges: React.FC = () => {
   );
 };
 
-export default SDGBadges;
+export default React.memo(SDGBadges);

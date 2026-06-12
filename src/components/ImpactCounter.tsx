@@ -14,7 +14,7 @@ const ImpactCounter: React.FC<ImpactCounterProps> = ({
   globalSaved,
 }) => {
   return (
-    <div className="impact-counter" id="impact-counter">
+    <div className="impact-counter" id="impact-counter" aria-live="polite">
       <span className="impact-stat impact-personal">
         Your pledged savings: {personalSaved.toLocaleString()} kg CO₂/yr
       </span>

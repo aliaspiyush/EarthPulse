@@ -51,14 +51,40 @@ describe('Emissions Utilities', () => {
       expect(result.tier).toBe('EcoGuardian');
     });
 
-    it('floors fractional totals correctly', () => {
+    it('Test 11: handles exactly 0 kg correctly', () => {
+      expect(getTier(0)).toBe('EcoGuardian');
+      const result = calculateFootprint([{ questionId: 1, selectedIndex: 0, kgValue: 0 }]);
+      expect(result.totalKg).toBe(0);
+      expect(result.tier).toBe('EcoGuardian');
+    });
+
+    it('Test 12: handles extreme high values without overflow', () => {
+      const extreme = 999999999;
+      expect(getTier(extreme)).toBe('Heavy Footprint');
+      const result = calculateFootprint([{ questionId: 1, selectedIndex: 0, kgValue: extreme }]);
+      expect(result.totalKg).toBe(extreme);
+      expect(result.tier).toBe('Heavy Footprint');
+    });
+
+    it('Test 13: floors fractional totals correctly', () => {
       const answers: QuizAnswer[] = [
         { questionId: 1, selectedIndex: 0, kgValue: 1500.75 },
       ];
-      
       const result = calculateFootprint(answers);
-      
       expect(result.totalKg).toBe(1500);
+    });
+
+    it('Test 14: handles empty answers array', () => {
+      const result = calculateFootprint([]);
+      expect(result.totalKg).toBe(0);
+      expect(result.tier).toBe('EcoGuardian');
+      expect(result.breakdown.length).toBe(0);
+    });
+
+    it('Test 15: correctly floors very small fractional values', () => {
+      const result = calculateFootprint([{ questionId: 1, selectedIndex: 0, kgValue: 0.99 }]);
+      expect(result.totalKg).toBe(0);
+      expect(result.tier).toBe('EcoGuardian');
     });
   });
 });

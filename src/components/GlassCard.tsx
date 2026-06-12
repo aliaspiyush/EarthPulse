@@ -28,4 +28,4 @@ const GlassCard: React.FC<GlassCardProps> = ({
   );
 };
 
-export default GlassCard;
+export default React.memo(GlassCard);

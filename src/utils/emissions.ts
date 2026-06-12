@@ -16,6 +16,18 @@ export function calculateFootprint(answers: QuizAnswer[]): UserFootprint {
   };
 }
 
+export const TIER_THRESHOLDS = {
+  GUARDIAN: 4000,
+  AWARE: 8000,
+  AVERAGE: 14000,
+} as const;
+
+export const CO2_BASELINES = {
+  GLOBAL_AVERAGE: 4700,
+  MAX_SCALE: 20000,
+  QUESTION_MAX: 4000,
+} as const;
+
 /**
  * Determine tier from total kg CO₂ per year.
  * Thresholds based on global per-capita ranges:
@@ -23,8 +35,8 @@ export function calculateFootprint(answers: QuizAnswer[]): UserFootprint {
  * - Tiers are designed around that baseline.
  */
 export function getTier(totalKg: number): NonNullable<Tier> {
-  if (totalKg < 4000) return 'EcoGuardian';
-  if (totalKg < 8000) return 'Aware Citizen';
-  if (totalKg < 14000) return 'Average Impact';
+  if (totalKg < TIER_THRESHOLDS.GUARDIAN) return 'EcoGuardian';
+  if (totalKg < TIER_THRESHOLDS.AWARE) return 'Aware Citizen';
+  if (totalKg < TIER_THRESHOLDS.AVERAGE) return 'Average Impact';
   return 'Heavy Footprint';
 }

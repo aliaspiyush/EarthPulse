@@ -28,4 +28,4 @@ const ProgressDots: React.FC<ProgressDotsProps> = ({ currentAct, onDotClick }) =
   );
 };
 
-export default ProgressDots;
+export default React.memo(ProgressDots);
