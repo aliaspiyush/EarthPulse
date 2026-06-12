@@ -66,11 +66,6 @@ const Act5Ripple: React.FC<Act5Props> = ({
         {/* Mini Earth showing tier state */}
         <EarthOrb size={80} tier={tier} />
 
-        {/* Footprint Summary */}
-        <p className="footprint-summary">
-          Your footprint: {totalKg.toLocaleString()} kg CO₂/year
-        </p>
-
         {pledgedTotal > 0 && (
           <p className="pledged-summary">
             You pledged to save {pledgedTotal.toLocaleString()} kg this year
@@ -105,6 +100,11 @@ const Act5Ripple: React.FC<Act5Props> = ({
           ↩ Retake the quiz
         </button>
       </div>
+
+      {/* Footprint Summary (over the waves) */}
+      <p className="footprint-summary">
+        Your footprint: {totalKg.toLocaleString()} kg CO₂/year
+      </p>
     </section>
   );
 };

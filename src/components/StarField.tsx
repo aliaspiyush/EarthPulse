@@ -1,21 +1,30 @@
-import React, { useMemo } from 'react';
+import React, { useState } from 'react';
+
+interface Star {
+  id: number;
+  top: string;
+  left: string;
+  size: number;
+  delay: string;
+  duration: string;
+}
 
 /**
  * StarField — 200 twinkling star dots for the Act 1 deep-space background.
- * Uses useMemo to generate random positions once on mount,
- * preventing re-randomization on re-renders.
+ * Uses useEffect to generate random positions once on mount,
+ * preventing re-randomization and keeping render pure.
  */
 const StarField: React.FC = () => {
-  const stars = useMemo(() => {
-    return Array.from({ length: 200 }, (_, i) => ({
+  const [stars] = useState<Star[]>(() =>
+    Array.from({ length: 200 }, (_, i) => ({
       id: i,
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
       size: Math.random() * 1.5 + 0.5, // 0.5px to 2px
       delay: `${Math.random() * 5}s`,
       duration: `${Math.random() * 3 + 2}s`, // 2-5s twinkling
-    }));
-  }, []);
+    }))
+  );
 
   return (
     <div className="star-field" aria-hidden="true">
@@ -37,4 +46,4 @@ const StarField: React.FC = () => {
   );
 };
 
-export default StarField;
+export default React.memo(StarField);

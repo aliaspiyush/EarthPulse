@@ -77,7 +77,7 @@ const App: React.FC = () => {
     <>
       <ProgressDots currentAct={currentAct} onDotClick={scrollToAct} />
 
-      <div className="scroll-container" ref={scrollRef}>
+      <main className="scroll-container" ref={scrollRef}>
         <Act1Pulse tier={footprint?.tier ?? null} />
 
         <Act2Mirror onComplete={handleQuizComplete} />
@@ -104,7 +104,7 @@ const App: React.FC = () => {
           geminiResponse={geminiResponse}
           onRestart={handleRestart}
         />
-      </div>
+      </main>
     </>
   );
 };

@@ -75,4 +75,4 @@ const EarthOrb: React.FC<EarthOrbProps> = ({
   );
 };
 
-export default EarthOrb;
+export default React.memo(EarthOrb);

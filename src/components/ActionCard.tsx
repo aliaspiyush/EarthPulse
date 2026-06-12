@@ -17,7 +17,7 @@ const ActionCard: React.FC<ActionCardProps> = ({
   onTogglePledge,
 }) => {
   const [particles, setParticles] = useState<
-    { id: number; x: number; y: number; angle: number }[]
+    { id: number; x: number; y: number; tx: number; ty: number }[]
   >([]);
   const btnRef = useRef<HTMLButtonElement>(null);
   const particleIdRef = useRef(0);
@@ -31,11 +31,15 @@ const ActionCard: React.FC<ActionCardProps> = ({
 
       const newParticles = Array.from({ length: 6 }, (_, i) => {
         particleIdRef.current += 1;
+        const angle = (360 / 6) * i;
+        const rad = (angle * Math.PI) / 180;
+        const distance = 40 + Math.random() * 20;
         return {
           id: particleIdRef.current,
           x: centerX,
           y: centerY,
-          angle: (360 / 6) * i,
+          tx: Math.cos(rad) * distance,
+          ty: Math.sin(rad) * distance,
         };
       });
 
@@ -78,11 +82,6 @@ const ActionCard: React.FC<ActionCardProps> = ({
 
         {/* Particle burst */}
         {particles.map((p) => {
-          const rad = (p.angle * Math.PI) / 180;
-          const distance = 40 + Math.random() * 20;
-          const tx = Math.cos(rad) * distance;
-          const ty = Math.sin(rad) * distance;
-
           return (
             <div
               key={p.id}
@@ -96,7 +95,7 @@ const ActionCard: React.FC<ActionCardProps> = ({
                 background: '#52C41A',
                 pointerEvents: 'none',
                 animation: 'particleBurst 0.6s ease-out forwards',
-                transform: `translate(${tx}px, ${ty}px)`,
+                transform: `translate(${p.tx}px, ${p.ty}px)`,
                 opacity: 0,
                 // Animate via keyframes
               }}
