@@ -16,12 +16,18 @@ export function calculateFootprint(answers: QuizAnswer[]): UserFootprint {
   };
 }
 
+/**
+ * Thresholds (kg CO2/year) dividing the impact tiers.
+ */
 export const TIER_THRESHOLDS = {
   GUARDIAN: 4000,
   AWARE: 8000,
   AVERAGE: 14000,
 } as const;
 
+/**
+ * Baseline constants for scaling visual elements.
+ */
 export const CO2_BASELINES = {
   GLOBAL_AVERAGE: 4700,
   MAX_SCALE: 20000,

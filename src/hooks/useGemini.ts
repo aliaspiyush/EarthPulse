@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import type { GeminiResponse, Tier } from '../types';
 import { callGemini } from '../utils/gemini';
+import { FALLBACK_ANALOGIES } from '../data/fallbacks';
 
 export function useGemini() {
   const [geminiResponse, setGeminiResponse] = useState<GeminiResponse | null>(null);
@@ -13,9 +14,9 @@ export function useGemini() {
     try {
       const response = await callGemini(totalKg, tier);
       setGeminiResponse(response);
-    } catch (err) {
-      console.warn('[EarthPulse] Gemini API Error:', err);
+    } catch {
       setGeminiError(true);
+      setGeminiResponse(FALLBACK_ANALOGIES[tier]);
     } finally {
       setGeminiLoading(false);
     }

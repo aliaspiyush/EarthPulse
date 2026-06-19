@@ -26,6 +26,7 @@ const Act3Weight: React.FC<Act3Props> = ({
   footprint,
   geminiResponse,
   geminiLoading,
+  geminiError,
   fetchGeminiResponse,
 }) => {
   const [displayNumber, setDisplayNumber] = useState(0);
@@ -128,6 +129,12 @@ const Act3Weight: React.FC<Act3Props> = ({
         <h2 className="gemini-heading">What that actually means.</h2>
 
         {geminiLoading && <SkeletonLoader />}
+
+        {geminiError && !geminiLoading && (
+          <div role="alert" className="error-banner" style={{ background: 'rgba(255,82,82,0.1)', color: '#FF5252', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+            ⚠️ AI generation failed. Showing standard insights.
+          </div>
+        )}
 
         {geminiResponse && !geminiLoading && (
           <>

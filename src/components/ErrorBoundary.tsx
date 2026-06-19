@@ -1,4 +1,5 @@
 import React from 'react';
+import { logger } from '../utils/logger';
 
 export class ErrorBoundary extends React.Component<
   { children: React.ReactNode; actName: string },
@@ -11,13 +12,14 @@ export class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error) {
-    console.warn(`[EarthPulse] ${this.props.actName} error:`, error.message);
+    logger.warn(`[EarthPulse] ${this.props.actName} error:`, error.message);
   }
 
   render() {
     if (this.state.hasError) {
       return (
         <div
+          role="alert"
           className="act"
           style={{
             display: 'flex',

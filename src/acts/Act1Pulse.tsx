@@ -41,7 +41,7 @@ const Act1Pulse: React.FC<Act1Props> = ({ tier }) => {
 
       <div className="co2-pill" id="co2-counter">
         <span className="co2-pill-text">
-          🌍 Atmospheric CO₂:{' '}
+          <span aria-hidden="true">🌍</span> Atmospheric CO₂:{' '}
           <span className="co2-pill-value">{co2.toFixed(4)} ppm</span>
         </span>
       </div>

@@ -1,5 +1,5 @@
-import { GeminiResponse, Tier } from '../types';
-import { FALLBACK_ANALOGIES } from '../data/fallbacks';
+import type { GeminiResponse, Tier } from '../types';
+import { logger } from './logger';
 
 const SYSTEM_INSTRUCTION = `You are a carbon footprint translator for a campaign web app. Your job is to make abstract CO₂ numbers feel physically real to users. You must follow output rules exactly.
 
@@ -19,6 +19,9 @@ STRICT RULES:
  *
  * Uses @google/generative-ai npm package.
  * Model: gemini-2.5-flash
+ * @param {number} totalKg - The user's total carbon footprint in kg.
+ * @param {NonNullable<Tier>} tier - The user's assigned tier.
+ * @returns {Promise<GeminiResponse>} The generated or fallback analogies.
  */
 export async function callGemini(
   totalKg: number,
@@ -27,8 +30,7 @@ export async function callGemini(
   try {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
     if (!apiKey) {
-      console.warn('VITE_GEMINI_API_KEY is not set. Using fallback analogies.');
-      return FALLBACK_ANALOGIES[tier];
+      throw new Error('VITE_GEMINI_API_KEY is not set');
     }
 
     // Dynamic import to avoid bundling issues if key is absent
@@ -62,9 +64,7 @@ Return this exact JSON structure, nothing else:
       if (jsonMatch) {
         parsed = JSON.parse(jsonMatch[0]);
       } else {
-        // JSON parse failed completely — use fallback
-        console.warn('Gemini response was not valid JSON, using fallback.');
-        return FALLBACK_ANALOGIES[tier];
+        throw new Error('Gemini response was not valid JSON');
       }
     }
 
@@ -75,8 +75,7 @@ Return this exact JSON structure, nothing else:
       typeof parsed.oneChange !== 'string' ||
       typeof parsed.hopeAnalogy !== 'string'
     ) {
-      console.warn('Gemini response structure invalid, using fallback.');
-      return FALLBACK_ANALOGIES[tier];
+      throw new Error('Gemini response structure invalid');
     }
 
     return {
@@ -85,9 +84,8 @@ Return this exact JSON structure, nothing else:
       hopeAnalogy: parsed.hopeAnalogy,
     };
   } catch (error: unknown) {
-    // Explicit error handling — never let this surface to UI
     const message = error instanceof Error ? error.message : String(error);
-    console.error('Gemini API call failed:', message);
-    return FALLBACK_ANALOGIES[tier];
+    logger.error('Gemini API call failed:', message);
+    throw error;
   }
 }

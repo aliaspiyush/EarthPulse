@@ -9,14 +9,19 @@
  * RLS: insert from anon, select SUM for anon (aggregate only)
  */
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+import { STORAGE_KEYS } from './constants';
+import { logger } from './logger';
 
+/**
+ * Retrieves the current session ID from sessionStorage.
+ * Generates a new UUID if none exists.
+ * @returns {string} The unique session identifier.
+ */
 function getSessionId(): string {
-  let sessionId = sessionStorage.getItem('earthpulse_session');
+  let sessionId = sessionStorage.getItem(STORAGE_KEYS.SESSION);
   if (!sessionId) {
     sessionId = crypto.randomUUID();
-    sessionStorage.setItem('earthpulse_session', sessionId);
+    sessionStorage.setItem(STORAGE_KEYS.SESSION, sessionId);
   }
   return sessionId;
 }
@@ -24,13 +29,19 @@ function getSessionId(): string {
 /**
  * Save pledge to Supabase. Fire-and-forget — does not block UI.
  * Fails silently if Supabase is not configured.
+ * @param {number[]} actionsPledged - Array of action IDs pledged.
+ * @param {number} totalKgSaved - Total kilograms of CO2 saved.
+ * @returns {Promise<void>} Resolves when the pledge is processed.
  */
 export async function savePledge(
   actionsPledged: number[],
   totalKgSaved: number
 ): Promise<void> {
+  const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+  const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-    console.info('Supabase not configured — pledge saved locally only.');
+    logger.info('Supabase not configured — pledge saved locally only.');
     return;
   }
 
@@ -51,19 +62,23 @@ export async function savePledge(
     });
 
     if (!response.ok) {
-      console.warn('Supabase pledge save failed:', response.status);
+      logger.warn('Supabase pledge save failed:', response.status);
     }
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
-    console.warn('Supabase pledge save error:', message);
+    logger.warn('Supabase pledge save error:', message);
   }
 }
 
 /**
  * Get total pledged kg from all users.
  * Returns null if Supabase is not configured or request fails.
+ * @returns {Promise<number | null>} Total pledged globally or null if unavailable.
  */
 export async function getTotalPledged(): Promise<number | null> {
+  const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+  const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
     return null;
   }
@@ -82,7 +97,7 @@ export async function getTotalPledged(): Promise<number | null> {
     );
 
     if (!response.ok) {
-      console.warn('Supabase total fetch failed:', response.status);
+      logger.warn('Supabase total fetch failed:', response.status);
       return null;
     }
 
@@ -96,7 +111,7 @@ export async function getTotalPledged(): Promise<number | null> {
     return typeof data === 'object' && data !== null ? Number(data.total ?? 0) : null;
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
-    console.warn('Supabase total fetch error:', message);
+    logger.warn('Supabase total fetch error:', message);
     return null;
   }
 }

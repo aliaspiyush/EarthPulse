@@ -86,6 +86,7 @@ const Act5Ripple: React.FC<Act5Props> = ({
           onClick={handleShare}
           type="button"
           id="share-result-btn"
+          aria-label="Share Your Result Image"
         >
           Share Your Result
         </button>
@@ -96,6 +97,7 @@ const Act5Ripple: React.FC<Act5Props> = ({
           onClick={onRestart}
           type="button"
           id="restart-quiz-btn"
+          aria-label="Retake the quiz from the beginning"
         >
           ↩ Retake the quiz
         </button>

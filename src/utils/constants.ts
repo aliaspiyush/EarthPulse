@@ -9,3 +9,11 @@ export const ANIMATION_DURATIONS = {
   CARD_FLASH: 500,
   CARD_ADVANCE: 600,
 } as const;
+
+export const STORAGE_KEYS = {
+  SESSION: 'earthpulse_session',
+} as const;
+
+export const FILE_NAMES = {
+  SHARE_IMAGE: 'earthpulse-result.png',
+} as const;

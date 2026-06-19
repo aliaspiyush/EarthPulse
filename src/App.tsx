@@ -1,10 +1,11 @@
-import React, { useState, useRef, useCallback, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useRef, useCallback, lazy, Suspense } from 'react';
 import type { UserFootprint } from './types';
 import ProgressDots from './components/ProgressDots';
 import Act1Pulse from './acts/Act1Pulse';
 import ErrorBoundary from './components/ErrorBoundary';
 import { usePledges } from './hooks/usePledges';
 import { useGemini } from './hooks/useGemini';
+import { useActiveAct } from './hooks/useActiveAct';
 import { ANIMATION_DURATIONS } from './utils/constants';
 
 const Act2Mirror = lazy(() => import('./acts/Act2Mirror'));
@@ -37,30 +38,8 @@ const App: React.FC = () => {
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Track which act is in view via IntersectionObserver
-  useEffect(() => {
-    const container = scrollRef.current;
-    if (!container) return;
-
-    const sections = container.querySelectorAll('.act');
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const id = entry.target.getAttribute('id');
-            if (id) {
-              const actNum = parseInt(id.replace('act-', ''), 10);
-              if (!isNaN(actNum)) setCurrentAct(actNum);
-            }
-          }
-        });
-      },
-      { root: container, threshold: 0.5 }
-    );
-
-    sections.forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
-  }, []);
+  // Track which act is in view
+  useActiveAct(scrollRef, setCurrentAct);
 
   const scrollToAct = useCallback((act: number) => {
     const el = document.getElementById(`act-${act}`);

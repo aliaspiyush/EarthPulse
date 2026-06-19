@@ -39,8 +39,8 @@
 
   /* Text */
   --text-primary:      #E8F4EA;   /* warm off-white, not pure #FFF */
-  --text-secondary:    rgba(232,244,234,0.65);
-  --text-muted:        rgba(232,244,234,0.35);
+  --text-secondary:    rgba(232,244,234,0.75);
+  --text-muted:        rgba(232,244,234,0.55);
   --text-data:         #ADE8F4;   /* ocean tint for numbers/mono */
 
   /* Glass surfaces — warm-tinted, not cold blue */
